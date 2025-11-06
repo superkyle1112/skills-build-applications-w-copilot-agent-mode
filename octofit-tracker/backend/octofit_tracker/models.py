@@ -1,4 +1,3 @@
-# Users, Teams, Activities, Leaderboard, Workouts models
 from django.db import models
 
 class Team(models.Model):
@@ -16,29 +15,24 @@ class User(models.Model):
 		return f"{self.name} ({self.email})"
 
 class Activity(models.Model):
-	name = models.CharField(max_length=100)
-	description = models.TextField(blank=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activities')
-	date = models.DateField()
+	type = models.CharField(max_length=50)
+	duration = models.IntegerField(help_text='Duration in minutes')
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.user.name} - {self.type} ({self.duration} min)"
+
+class Workout(models.Model):
+	name = models.CharField(max_length=100)
+	description = models.TextField()
+
+	def __str__(self):
+		return self.name
+
+class Leaderboard(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='leaderboard_entries')
 	points = models.IntegerField(default=0)
 
 	def __str__(self):
-		return f"{self.name} - {self.user.name}"
-
-class Workout(models.Model):
-	user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='workouts')
-	activity = models.ForeignKey(Activity, on_delete=models.CASCADE, related_name='workout_activities')
-	duration = models.IntegerField(help_text='Duration in minutes')
-	calories = models.IntegerField(default=0)
-	date = models.DateField()
-
-	def __str__(self):
-		return f"Workout for {self.user.name} on {self.date}"
-
-class Leaderboard(models.Model):
-	team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name='leaderboards')
-	total_points = models.IntegerField(default=0)
-	rank = models.IntegerField(default=0)
-
-	def __str__(self):
-		return f"Leaderboard: {self.team.name} (Rank {self.rank})"
+		return f"{self.user.name}: {self.points} pts"

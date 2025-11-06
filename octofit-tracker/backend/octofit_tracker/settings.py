@@ -84,13 +84,12 @@ DATABASES = {
         'NAME': 'octofit_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'localhost',
+            'host': 'mongodb://localhost:27017',
             'port': 27017,
             'username': '',
             'password': '',
-            'authSource': '',
-            'authMechanism': '',
-        },
+            'authSource': 'admin',
+        }
     }
 }
 
